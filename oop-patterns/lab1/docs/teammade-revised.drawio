@@ -1,0 +1,109 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0" version="29.6.6">
+  <diagram name="LAB1-Revised" id="rev1">
+    <mxGraphModel dx="1293" dy="705" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2800" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;i&gt;&lt;&lt;abstract&gt;&gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Text&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ ~Text() : virtual&lt;br&gt;+ getContent() : string = 0&lt;/div&gt;" vertex="1">
+          <mxGeometry height="110" width="280" x="815" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;div style=&quot;text-align: center; border-bottom: 1px solid rgb(153, 153, 153); padding: 5px 4px;&quot;&gt;&lt;br&gt;&lt;b&gt;NameText&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left; border-bottom: 1px solid rgb(153, 153, 153); padding: 3px 6px; font-size: 12px;&quot;&gt;- formattedName: string&lt;br&gt;- initials: string&lt;br&gt;- rawLength: size_t&lt;br&gt;- valid: bool&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ NameText(rawInput: string)&lt;br&gt;+ parse(input: string): void&lt;br&gt;+ checkValid(): bool&lt;br&gt;+ getContent(): string&lt;br&gt;+ getInitials(): string&lt;br&gt;+ getRawInputLength(): size_t&lt;br&gt;+ getDisplayNameLength(): int&lt;/div&gt;" vertex="1">
+          <mxGeometry height="290" width="300" x="410" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;i&gt;&lt;&lt;abstract&gt;&gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;CardStencil&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt;# borderChar: char&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ ~CardStencil() : virtual&lt;br&gt;+ getPattern(): string = 0&lt;br&gt;+ render(name, initials): string = 0&lt;br&gt;+ setBorderChar(c: char): void&lt;/div&gt;" vertex="1">
+          <mxGeometry height="175" width="340" x="390" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#ffffff;strokeColor=#000000;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;CardStencil1&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ getPattern(): string&lt;br&gt;+ render(name, initials): string&lt;/div&gt;" vertex="1">
+          <mxGeometry height="90" width="340" x="390" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;div style=&quot;text-align: center; border-bottom: 1px solid rgb(153, 153, 153); padding: 5px 4px;&quot;&gt;&lt;i&gt;&amp;lt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Product&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left; border-bottom: 1px solid rgb(153, 153, 153); padding: 3px 6px; font-size: 12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ ~Product() : virtual&lt;br&gt;+ toString() : string = 0&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="270" x="790" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;div style=&quot;text-align: center; border-bottom: 1px solid rgb(153, 153, 153); padding: 5px 4px;&quot;&gt;&lt;br&gt;&lt;b&gt;Card&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left; border-bottom: 1px solid rgb(153, 153, 153); padding: 3px 6px; font-size: 12px;&quot;&gt;- stencil: shared_ptr&amp;lt;CardStencil&amp;gt;&lt;br&gt;- cardText: shared_ptr&amp;lt;NameText&amp;gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ Card(s, t)&lt;br&gt;+ static create(name): shared_ptr&amp;lt;Card&amp;gt;&lt;br&gt;+ toString(): string&lt;br&gt;+ setBorder(c: char): void&lt;br&gt;+ getDisplayNameLength(): int&lt;/div&gt;" vertex="1">
+          <mxGeometry height="210" width="330" x="790" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;i&gt;&lt;&lt;interface&gt;&gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Order&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ ~Order() : virtual&lt;br&gt;+ getProduct(): shared_ptr&amp;lt;Product&amp;gt;&lt;br&gt;+ getQuantity(): int&lt;br&gt;+ getTotalPrice(): int&lt;/div&gt;" vertex="1">
+          <mxGeometry height="145" width="330" x="1180" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;div style=&quot;text-align: center; border-bottom: 1px solid rgb(153, 153, 153); padding: 5px 4px;&quot;&gt;&lt;br&gt;&lt;b&gt;CardOrder&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left; border-bottom: 1px solid rgb(153, 153, 153); padding: 3px 6px; font-size: 12px;&quot;&gt;- card: shared_ptr&amp;lt;Card&amp;gt;&lt;br&gt;- calculator: Calculator&lt;br&gt;- quantity: int&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ CardOrder(card: shared_ptr&amp;lt;Card&amp;gt;)&lt;br&gt;+ setQuantity(q: int): void&lt;br&gt;+ getProduct(): shared_ptr&amp;lt;Product&amp;gt;&lt;br&gt;+ getQuantity(): int&lt;br&gt;+ getTotalPrice(): int&lt;br&gt;+ getDiscountMsg(): string&lt;br&gt;+ getCard(): shared_ptr&amp;lt;Card&amp;gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="280" width="340" x="1180" y="245" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;div style=&quot;text-align: center; border-bottom: 1px solid rgb(153, 153, 153); padding: 5px 4px;&quot;&gt;&lt;b&gt;Calculator&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left; border-bottom: 1px solid rgb(153, 153, 153); padding: 3px 6px; font-size: 12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ calcPricePerCard(len: int): int&lt;br&gt;+ calcTotal(len: int, qty: int): int&lt;br&gt;+ hasDiscount(qty: int): bool&lt;br&gt;+ getDiscountMsg(qty: int): string&lt;/div&gt;" vertex="1">
+          <mxGeometry height="155" width="340" x="1180" y="595" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;i&gt;&lt;&lt;abstract&gt;&gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;POS&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt;# input: shared_ptr&amp;lt;Input&amp;gt;&lt;br&gt;# output: shared_ptr&amp;lt;Output&amp;gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ POS(i, o)&lt;br&gt;+ ~POS(): virtual&lt;br&gt;+ addOrder(order): void = 0&lt;br&gt;+ calculateTotal(): int = 0&lt;br&gt;+ getOrders(): vector = 0&lt;br&gt;+ runScenario(): void = 0&lt;/div&gt;" vertex="1">
+          <mxGeometry height="215" width="360" x="1580" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#ffffff;strokeColor=#000000;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;VendingMachinePOS&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt;- orders: vector&amp;lt;shared_ptr&amp;lt;Order&amp;gt;&amp;gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ VendingMachinePOS(i, o)&lt;br&gt;+ addOrder(order): void&lt;br&gt;+ calculateTotal(): int&lt;br&gt;+ getOrders(): vector&lt;br&gt;+ runScenario(): void&lt;/div&gt;" vertex="1">
+          <mxGeometry height="180" width="360" x="1580" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;i&gt;&lt;&lt;abstract&gt;&gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Input&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ readLine(): string = 0&lt;/div&gt;" vertex="1">
+          <mxGeometry height="90" width="240" x="2064" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;i&gt;&lt;&lt;abstract&gt;&gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Output&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ writeLine(msg: string): void = 0&lt;/div&gt;" vertex="1">
+          <mxGeometry height="90" width="260" x="2310" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="c15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#ffffff;strokeColor=#000000;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;UserInput&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ readLine(): string&lt;/div&gt;" vertex="1">
+          <mxGeometry height="65" width="210" x="1960" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#ffffff;strokeColor=#000000;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;UserOutput&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ writeLine(msg): void&lt;/div&gt;" vertex="1">
+          <mxGeometry height="65" width="220" x="2250" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#ffffff;strokeColor=#000000;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;TestInput&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt;- inputs: queue&amp;lt;string&amp;gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ pushInput(input: string): void&lt;br&gt;+ readLine(): string&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="260" x="2054" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#ffffff;strokeColor=#000000;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;TestOutput&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt;- outputs: vector&amp;lt;string&amp;gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ writeLine(msg): void&lt;br&gt;+ getOutputs(): vector&amp;lt;string&amp;gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="270" x="2510" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="c90" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#f5f5f5;strokeColor=#666666;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;Legend&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt; &lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;Blue = abstract/interface&lt;br&gt;Yellow = revised&lt;br&gt;Green = new class&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="200" x="1680" y="622.5" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="c3" style="endArrow=block;endSize=16;endFill=0;html=1;" target="c2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="c5" style="endArrow=block;endSize=16;endFill=0;html=1;" target="c4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="c7" style="endArrow=block;endSize=16;endFill=0;html=1;" target="c6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="c9" style="endArrow=block;endSize=16;endFill=0;html=1;" target="c8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="c12" style="endArrow=block;endSize=16;endFill=0;html=1;" target="c11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="c15" style="endArrow=block;endSize=16;endFill=0;html=1;" target="c13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="c16" style="endArrow=block;endSize=16;endFill=0;html=1;" target="c14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="c17" style="endArrow=block;endSize=16;endFill=0;html=1;" target="c13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="c18" style="endArrow=block;endSize=16;endFill=0;html=1;" target="c14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="c7" style="startArrow=diamondThin;startFill=0;startSize=14;endArrow=open;endSize=10;html=1;" target="c4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="c7" style="startArrow=diamondThin;startFill=0;startSize=14;endArrow=open;endSize=10;html=1;" target="c2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="c9" style="startArrow=diamondThin;startFill=0;startSize=14;endArrow=open;endSize=10;html=1;" target="c7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="c9" style="startArrow=diamondThin;startFill=1;startSize=14;endArrow=open;endSize=10;html=1;" target="c10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="c11" style="startArrow=diamondThin;startFill=0;startSize=14;endArrow=open;endSize=10;html=1;" target="c13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="c11" style="startArrow=diamondThin;startFill=0;startSize=14;endArrow=open;endSize=10;html=1;" target="c14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

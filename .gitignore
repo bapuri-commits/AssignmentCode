@@ -1,0 +1,36 @@
+# Visual Studio 빌드 아티팩트
+.vs/
+x64/
+Debug/
+Release/
+*.exe
+*.pdb
+*.ilk
+*.obj
+*.idb
+*.suo
+*.db
+*.vsidx
+*.ipch
+*.tlog
+*.lastbuildstate
+*.recipe
+*.log
+*.FileListAbsolute.txt
+*.CppClean.log
+
+# macOS 메타데이터
+__MACOSX/
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Python
+__pycache__/
+*.pyc
+
+# Java
+*.class
+target/
