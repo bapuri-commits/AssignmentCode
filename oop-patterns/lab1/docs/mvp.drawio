@@ -1,0 +1,31 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.2.7">
+  <diagram name="LAB1-MVP" id="mvp1">
+    <mxGraphModel dx="1042" dy="562" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#ffffff;strokeColor=#000000;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;Name&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt;- firstName: string&lt;br&gt;- middleName: string&lt;br&gt;- lastName: string&lt;br&gt;- fullInput: string&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ Name(fullName: string)&lt;br&gt;+ getInitials(): string&lt;br&gt;+ getDisplayName(): string&lt;br&gt;+ getDisplayLength(): int&lt;br&gt;+ isValid(): bool&lt;/div&gt;" vertex="1">
+          <mxGeometry height="200" width="280" x="80" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;fillColor=#ffffff;strokeColor=#000000;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;Stencil&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt;- borderChar: char&lt;br&gt;- width: int&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ Stencil()&lt;br&gt;+ getBorderChar(): char&lt;br&gt;+ setBorderChar(c: char): void&lt;br&gt;+ buildTopLine(initials: string): string&lt;br&gt;+ buildEmptyLine(): string&lt;br&gt;+ buildNameLine(displayName: string): string&lt;/div&gt;" vertex="1">
+          <mxGeometry height="195" width="300" x="80" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;Calculator&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt;&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ calcTotal(nameLen: int, numCards: int): int&lt;br&gt;+ hasDiscount(numCards: int): bool&lt;br&gt;+ getDiscountMsg(numCards: int): string&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="330" x="730" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=0;overflow=fill;" value="&lt;div style=&quot;text-align:center;border-bottom:1px solid #999;padding:5px 4px;&quot;&gt;&lt;b&gt;CardOrder&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;text-align:left;border-bottom:1px solid #999;padding:3px 6px;font-size:12px;&quot;&gt;- name: Name&lt;br&gt;- stencil: Stencil&lt;br&gt;- calculator: Calculator&lt;br&gt;- numCards: int&lt;/div&gt;&lt;div style=&quot;text-align:left;padding:3px 6px;font-size:12px;&quot;&gt;+ CardOrder(fullName: string)&lt;br&gt;+ getName(): Name&amp;amp;&lt;br&gt;+ getStencil(): Stencil&amp;amp;&lt;br&gt;+ getNumCards(): int&lt;br&gt;+ setNumCards(n: int): void&lt;br&gt;+ setBorderChar(c: char): void&lt;br&gt;+ getSampleCard(): string&lt;br&gt;+ printResult(): void&lt;/div&gt;" vertex="1">
+          <mxGeometry height="265" width="310" x="730" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="c4" style="startArrow=diamondThin;startFill=1;startSize=14;endArrow=open;endSize=10;html=1;" target="c1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="c4" style="startArrow=diamondThin;startFill=1;startSize=14;endArrow=open;endSize=10;html=1;" target="c2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="c4" style="startArrow=diamondThin;startFill=1;startSize=14;endArrow=open;endSize=10;html=1;" target="c3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
