@@ -4,7 +4,7 @@
 #define MAX_TERMS 101
 
 typedef struct {
-	float coef;
+	double coef;
 	int xexp, yexp, zexp;
 } polynomial;
 
@@ -83,7 +83,7 @@ int compare_y(const void *a, const void *b)
 	return tb->yexp - ta->yexp;
 }
 
-void attach(float coef, int xexp, int yexp, int zexp)
+void attach(double coef, int xexp, int yexp, int zexp)
 {
 	if (avail >= MAX_TERMS) {
 		fprintf(stderr, "Terms are so many\n");
@@ -103,7 +103,7 @@ void multPoly(Teamgroup A[], int sizeA, Teamgroup B[], int sizeB, int *cs, int *
 
 	for (int i = 0; i < sizeA; i++) {
 		for (int j = 0; j < sizeB; j++) {
-			float c = 1.0f;
+			double c = 1.0;
 			int xe = 0, ye = 0, ze = 0;
 
 			for (int k = 0; k < A[i].factorsnum; k++) {
@@ -130,7 +130,7 @@ void multPoly(Teamgroup A[], int sizeA, Teamgroup B[], int sizeB, int *cs, int *
 	*cs = avail;
 	for (int i = 0; i < cnt; i++) {
 		if (temp[i].coef == 0) continue;
-		float c = temp[i].coef;
+		double c = temp[i].coef;
 		for (int j = i + 1; j < cnt; j++) {
 			if (temp[j].xexp == temp[i].xexp &&
 			    temp[j].yexp == temp[i].yexp &&
@@ -156,11 +156,11 @@ void print_poly(int s, int e)
 	}
 	for (int i = s; i <= e; i++) {
 		if (i == s)
-			printf("%.1f", terms[i].coef);
+			printf("%.4f", terms[i].coef);
 		else if (terms[i].coef >= 0)
-			printf(" + %.1f", terms[i].coef);
+			printf(" + %.4f", terms[i].coef);
 		else
-			printf(" - %.1f", -terms[i].coef);
+			printf(" - %.4f", -terms[i].coef);
 
 		if (terms[i].xexp == 1) printf("x");
 		else if (terms[i].xexp > 1) printf("x^%d", terms[i].xexp);
