@@ -50,11 +50,11 @@ public class RealtimeGraphSession<T, E> implements ISession {
                 while ((next = queue.tryDequeue()) != null) {
                     appendable.appendData(next);
                 }
-
-                appendable.resumeObservers();
             } catch (Exception e) {
                 System.err.println("실시간 처리 오류: " + e.getMessage());
                 onStop.run();
+            } finally {
+                appendable.resumeObservers();
             }
         }
     }

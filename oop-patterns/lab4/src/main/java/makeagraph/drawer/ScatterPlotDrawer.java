@@ -77,7 +77,9 @@ public class ScatterPlotDrawer implements IScatterDrawer {
         for (int i = 0; i < points.size(); i++) {
             int col = scaleCalc.toCol(xValues.get(i), xRange.getMin(), xRange.getMax(), gridWidth);
             int row = scaleCalc.toRow(yValues.get(i), yRange.getMin(), yRange.getMax(), gridHeight);
-            grid[row][col] = '*';
+            if (row >= 0 && row < gridHeight && col >= 0 && col < gridWidth) {
+                grid[row][col] = '*';
+            }
         }
 
         List<String> lines = new ArrayList<>();
