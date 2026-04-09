@@ -54,6 +54,10 @@ public class GraphDirector {
         throw new IllegalArgumentException("Unknown type: " + type);
     }
 
+    public BuildResult<?, ?> constructGraphOnly(IInputSource source, IRenderer renderer) {
+        return constructGraph(source, renderer);
+    }
+
     public ISession constructRealtimeSession(IInputSource source, IRenderer renderer,
                                               RealtimeSourceFactory factory) {
         return assembleRealtimeSession(constructGraph(source, renderer), factory);
