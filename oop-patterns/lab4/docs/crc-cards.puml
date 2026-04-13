@@ -1,0 +1,446 @@
+@startuml CRC_Cards_MakeAGraph
+
+skinparam defaultFontSize 11
+skinparam defaultFontName "D2Coding"
+skinparam backgroundColor white
+skinparam shadowing false
+
+skinparam object {
+  BackgroundColor<<input>> #FFFFF0
+  BorderColor<<input>> #DAA520
+  BackgroundColor<<data>> #F0FFF0
+  BorderColor<<data>> #2E8B57
+  BackgroundColor<<graph>> #F0F8FF
+  BorderColor<<graph>> #4682B4
+  BackgroundColor<<draw>> #FFF8F0
+  BorderColor<<draw>> #D2691E
+  BackgroundColor<<output>> #FFF0FF
+  BorderColor<<output>> #8B008B
+  BackgroundColor<<assembly>> #FFF0F0
+  BorderColor<<assembly>> #CD5C5C
+  BackgroundColor<<session>> #F0FFFF
+  BorderColor<<session>> #008B8B
+}
+
+title MakeAGraph — CRC 카드 (콘솔 대화형)\n검증 완료 v2
+
+' ============================================================
+'  입력 계층
+' ============================================================
+package "입력 계층" {
+
+object "**IInputSource** <<interface>>" as CRC_IIS <<input>> {
+  **책임**
+  ── 동기 블로킹 입력 읽기 (readObject)
+  ── 프롬프트 포함 오버로드 (readObject(prompt))
+  ── 자원 해제 (close)
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**ConsoleInput**" as CRC_CI <<input>> {
+  **책임**
+  ── System.in에서 입력 읽기
+  ── 프롬프트를 System.out에 출력 후 대기
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**ITypeSelector** <<interface>>" as CRC_ITS <<input>> {
+  **책임**
+  ── 그래프 타입(scatter/bar) 판단
+  ....
+  **협력자**
+  ── IInputSource
+}
+
+object "**ConsoleTypeSelector**" as CRC_CTS <<input>> {
+  **책임**
+  ── 콘솔에서 그래프 타입 질의
+  ── 유효성 검증 후 반환
+  ....
+  **협력자**
+  ── IInputSource
+}
+
+object "**IGraphDataInputHandler<T,E>**\n<<interface>>" as CRC_IGDIH <<input>> {
+  **책임**
+  ── 타입별 데이터 수집 (readData → T)
+  ── 메타 수집 (readMetadata → GraphMetadata)
+  ── 원소 파싱 (parseData → E)
+  ── 파서 생성 (createParser → IDataParser<E>)
+  ....
+  **협력자**
+  ── IInputSource
+  ── GraphMetadata
+}
+
+object "**ScatterConsoleInputHandler**" as CRC_SCIH <<input>> {
+  **책임**
+  ── dim 입력 → Point 반복 수집 → ScatterPlotData 생성
+  ── dim개 축 레이블 수집 → GraphMetadata 생성
+  ── 문자열 → Point 파싱
+  ....
+  **협력자**
+  ── IInputSource, ScatterPlotData
+  ── Point, GraphMetadata
+}
+
+object "**BarConsoleInputHandler**" as CRC_BCIH <<input>> {
+  **책임**
+  ── direction 입력 → (카테고리,값) 반복 수집
+  ── BarGraphData 생성, 메타 수집
+  ── 문자열 → Pair 파싱
+  ....
+  **협력자**
+  ── IInputSource, BarGraphData
+  ── GraphMetadata, Direction
+}
+}
+
+' ============================================================
+'  데이터 계층
+' ============================================================
+package "데이터 계층" {
+
+object "**Point**" as CRC_PT <<data>> {
+  **책임**
+  ── n차원 좌표 보관 (coords)
+  ── 인덱스 접근 (get), 차원 수 (size)
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**ScatterPlotData**" as CRC_SPD <<data>> {
+  **책임**
+  ── Point 목록 관리 (Subject)
+  ── append 시 옵저버 통지 위임
+  ── suspend/resume 위임
+  ....
+  **협력자**
+  ── Point, ObserverSupport
+}
+
+object "**BarGraphData**" as CRC_BGD <<data>> {
+  **책임**
+  ── Pair 목록 + 방향 관리 (Subject)
+  ── append 시 옵저버 통지 위임
+  ── direction 불변 보관
+  ....
+  **협력자**
+  ── ObserverSupport, Direction
+}
+
+object "**GraphMetadata**" as CRC_GM <<data>> {
+  **책임**
+  ── 제목 · 레이블 불변 보관
+  ── (title, xLabel, yLabel)
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**ObserverSupport**" as CRC_OS <<data>> {
+  **책임**
+  ── 옵저버 목록 관리
+  ── notifyObservers() 통지
+  ── suspend/resume 배치 제어 + dirty 추적
+  ....
+  **협력자**
+  ── IGraphObserver
+}
+
+object "**Direction** <<enum>>" as CRC_DIR <<data>> {
+  **책임**
+  ── VERTICAL / HORIZONTAL 값 정의
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**Range**" as CRC_RNG <<data>> {
+  **책임**
+  ── min/max 값 쌍 보관
+  ....
+  **협력자**
+  ── (없음)
+}
+}
+
+' ============================================================
+'  그래프 계층 — 인터페이스
+' ============================================================
+package "그래프 계층 — 인터페이스" {
+
+object "**IGraph<T>** <<interface>>" as CRC_IG <<graph>> {
+  **책임**
+  ── 그래프 그리기 (draw)
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**IDataAppendable<E>** <<interface>>" as CRC_IDA <<graph>> {
+  **책임**
+  ── 데이터 원소 추가 (appendData(E))
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**IBatchAppendable<E>** <<interface>>" as CRC_IBA <<graph>> {
+  **책임**
+  ── IDataAppendable 확장
+  ── 옵저버 일시중단/재개
+  ── (suspendObservers, resumeObservers)
+  ....
+  **협력자**
+  ── IDataAppendable<E>
+}
+
+object "**IViewControllable** <<interface>>" as CRC_IVC <<graph>> {
+  **책임**
+  ── 축 교환 (swapAxes)
+  ── 뷰 설정 (setView)
+  ── 가용 뷰 목록 반환 (getAvailableViews)
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**IGraphObserver** <<interface>>" as CRC_IGO <<graph>> {
+  **책임**
+  ── 데이터 변경 통지 수신 (onDataChanged)
+  ....
+  **협력자**
+  ── (없음)
+}
+}
+
+' ============================================================
+'  그래프 계층 — 추상/구체
+' ============================================================
+package "그래프 계층 — 추상/구체" {
+
+object "**AbstractGraph<T, D>** <<abstract>>" as CRC_AG <<graph>> {
+  **책임**
+  ── draw() Template Method 골격
+  ── (title → drawBody → print)
+  ── onDataChanged() → draw() 공통 구현
+  ....
+  **협력자**
+  ── D (Drawer), IRenderer
+  ── GraphMetadata
+}
+
+object "**AbstractAxisGraph<T, D>** <<abstract>>" as CRC_AAG <<graph>> {
+  **책임**
+  ── drawBody() 구현 (axis + plot 위임)
+  ── IViewControllable 공통 구현
+  ── (ViewController 위임)
+  ....
+  **협력자**
+  ── ViewController, D (Drawer)
+}
+
+object "**ScatterPlot**" as CRC_SP <<graph>> {
+  **책임**
+  ── appendData(Point) → data.append 위임
+  ── suspend/resume → data 위임
+  ....
+  **협력자**
+  ── ScatterPlotData
+}
+
+object "**BarGraph**" as CRC_BG <<graph>> {
+  **책임**
+  ── appendData(Pair) → data.append 위임
+  ── getAvailableViews() → 빈 목록 오버라이드
+  ── suspend/resume → data 위임
+  ....
+  **협력자**
+  ── BarGraphData
+}
+}
+
+' ============================================================
+'  그리기 계층
+' ============================================================
+package "그리기 계층" {
+
+object "**ITitle** <<interface>>" as CRC_IT <<draw>> {
+  **책임**
+  ── 제목 문자열 생성 (drawTitle)
+  ....
+  **협력자**
+  ── GraphMetadata
+}
+
+object "**IAxis<T>** <<interface>>" as CRC_IA <<draw>> {
+  **책임**
+  ── 축 문자열 생성 (drawAxis)
+  ── (data, metadata, axisMapping 수신)
+  ....
+  **협력자**
+  ── GraphMetadata
+}
+
+object "**IAxisPlot<T>** <<interface>>" as CRC_IAP <<draw>> {
+  **책임**
+  ── 데이터 영역 문자열 생성 (drawPlot)
+  ── (data, axisMapping 수신)
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**IScatterDrawer** <<interface>>" as CRC_ISD <<draw>> {
+  **책임**
+  ── 교차 타입: ITitle + IAxis<ScatterPlotData>
+  ──   + IAxisPlot<ScatterPlotData>
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**IBarDrawer** <<interface>>" as CRC_IBD <<draw>> {
+  **책임**
+  ── 교차 타입: ITitle + IAxis<BarGraphData>
+  ──   + IAxisPlot<BarGraphData>
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**ScatterPlotDrawer**" as CRC_SPDR <<draw>> {
+  **책임**
+  ── char grid 버킷 방식 산포도 렌더링
+  ── title / axis / plot 그리기
+  ── 축 레이블 axisMapping 분기
+  ....
+  **협력자**
+  ── ScaleCalculator
+  ── ScatterPlotData, GraphMetadata
+}
+
+object "**BarGraphDrawer**" as CRC_BGDR <<draw>> {
+  **책임**
+  ── direction 기반 수직/수평 막대 렌더링
+  ── 기준선(0) 보장, axisMapping 무시
+  ── title / axis / plot 그리기
+  ....
+  **협력자**
+  ── ScaleCalculator
+  ── BarGraphData, GraphMetadata, Direction
+}
+
+object "**ScaleCalculator**" as CRC_SC <<draw>> {
+  **책임**
+  ── nice interval 축 범위 계산 (calcRange)
+  ── 눈금 간격 (calcInterval)
+  ── 좌표 → grid 변환 (toCol/toRow)
+  ....
+  **협력자**
+  ── Range
+}
+
+object "**ViewController**" as CRC_VC <<draw>> {
+  **책임**
+  ── axisMapping 관리
+  ── 뷰 전환 (swapAxes, setView)
+  ── dim 기반 가용 뷰 목록 생성
+  ....
+  **협력자**
+  ── (없음)
+}
+}
+
+' ============================================================
+'  출력 계층
+' ============================================================
+package "출력 계층" {
+
+object "**IRenderer** <<interface>>" as CRC_IR <<output>> {
+  **책임**
+  ── 문자열 줄 목록 출력 (print)
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**TextRenderer**" as CRC_TR <<output>> {
+  **책임**
+  ── System.out에 텍스트 출력
+  ....
+  **협력자**
+  ── (없음)
+}
+}
+
+' ============================================================
+'  조립/세션 계층
+' ============================================================
+package "조립 / 세션 계층" {
+
+object "**GraphDirector**" as CRC_GD <<assembly>> {
+  **책임**
+  ── 조립 순서 제어 (Director)
+  ── construct(): 타입선택 → 데이터수집
+  ──   → 팩토리조립 → 세션생성
+  ....
+  **협력자**
+  ── ITypeSelector, IInputSource, IRenderer
+  ── ScatterConsoleInputHandler (생성)
+  ── BarConsoleInputHandler (생성)
+  ── GraphFactory, BuildResult, GraphSession
+}
+
+object "**GraphFactory** <<static>>" as CRC_GF <<assembly>> {
+  **책임**
+  ── 그래프 객체 생성
+  ── createScatter / createBar
+  ── Drawer · ViewController · ScaleCalc 내부 생성
+  ....
+  **협력자**
+  ── ScatterPlot, BarGraph, IRenderer
+  ── ScatterPlotDrawer, BarGraphDrawer
+  ── ScaleCalculator, ViewController
+}
+
+object "**BuildResult<T,E>**" as CRC_BR <<assembly>> {
+  **책임**
+  ── 조립 결과 전달 (내부용)
+  ── graph + appendable + handler 보관
+  ....
+  **협력자**
+  ── IGraph, IBatchAppendable
+  ── IGraphDataInputHandler
+}
+
+object "**ISession** <<interface>>" as CRC_IS <<session>> {
+  **책임**
+  ── 세션 시작/종료/대기 통일
+  ── (start, stop, await)
+  ....
+  **협력자**
+  ── (없음)
+}
+
+object "**GraphSession<T,E>**" as CRC_GS <<session>> {
+  **책임**
+  ── 대화형 세션 관리
+  ── 최초 draw, 명령어 루프 (add/view/exit)
+  ── 자원 정리 (source.close)
+  ....
+  **협력자**
+  ── IInputSource, IGraph<T>
+  ── IDataAppendable<E>
+  ── IGraphDataInputHandler<T,E>
+  ── IViewControllable (런타임 캐스트)
+}
+}
+
+@enduml

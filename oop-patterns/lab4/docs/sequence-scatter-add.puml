@@ -1,0 +1,239 @@
+@startuml Sequence_ScatterPlot_Add
+
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 200
+
+title 산포도 — 콘솔 대화형 시퀀스 (초기화 + add 데이터 추가)
+
+actor 사용자
+participant Main
+participant ":ConsoleInput" as src
+participant ":TextRenderer" as rdr
+participant ":ConsoleTypeSelector" as ts
+participant ":GraphDirector" as dir
+participant ":ScatterConsole\nInputHandler" as handler
+participant "GraphFactory" as fac
+participant ":ScatterPlotData" as data
+participant ":ObserverSupport" as obs
+participant ":ScatterPlot" as graph
+participant ":ScatterPlotDrawer" as drawer
+participant ":ScaleCalculator" as scale
+participant ":ViewController" as vc
+participant ":GraphSession" as session
+
+' ============================================================
+'  Phase 1: 초기화 — Main
+' ============================================================
+== Phase 1: 객체 생성 ==
+
+Main -> src ** : new ConsoleInput()
+Main -> rdr ** : new TextRenderer()
+Main -> ts ** : new ConsoleTypeSelector()
+Main -> dir ** : new GraphDirector(typeSelector)
+
+' ============================================================
+'  Phase 2: construct() — 그래프 조립
+' ============================================================
+== Phase 2: GraphDirector.construct() ==
+
+Main -> dir : construct(source, renderer)
+activate dir
+
+  dir -> ts : selectType(source)
+  activate ts
+    ts -> src : readObject("그래프 타입을 선택하세요")
+    src -> 사용자 : 프롬프트 출력
+    사용자 --> src : "scatter"
+    src --> ts : "scatter"
+  return "scatter"
+
+  dir -> handler ** : new ScatterConsoleInputHandler()
+
+  dir -> handler : readData(source)
+  activate handler
+    handler -> src : readObject("몇 차원 데이터입니까?")
+    src -> 사용자 : 프롬프트 출력
+    사용자 --> src : "2"
+    src --> handler : "2"
+    note right of handler : dim = 2 저장
+
+    loop 데이터 입력 (빈 줄까지)
+      handler -> src : readObject("(v1, v2) 형태로 입력")
+      사용자 --> src : "(1.0, 2.0)"
+      src --> handler : "(1.0, 2.0)"
+      handler -> handler : Point.of(1.0, 2.0)
+    end
+
+    handler -> data ** : new ScatterPlotData(points)
+    data -> obs ** : new ObserverSupport()
+  return data : ScatterPlotData
+
+  dir -> handler : readMetadata(source)
+  activate handler
+    handler -> src : readObject("그래프 제목?")
+    src -> 사용자 : 프롬프트 출력
+    사용자 --> src : "My Scatter"
+    src --> handler : "My Scatter"
+    handler -> src : readObject("X축 레이블?")
+    src -> 사용자 : 프롬프트 출력
+    사용자 --> src : "X"
+    src --> handler : "X"
+    handler -> src : readObject("Y축 레이블?")
+    src -> 사용자 : 프롬프트 출력
+    사용자 --> src : "Y"
+    src --> handler : "Y"
+  return metadata : GraphMetadata
+
+  dir -> fac : createScatter(data, metadata, renderer)
+  activate fac
+    fac -> scale ** : new ScaleCalculator()
+    fac -> drawer ** : new ScatterPlotDrawer(scaleCalc)
+    fac -> vc ** : new ViewController(dim=2)
+    fac -> graph ** : new ScatterPlot(\n  data, metadata, renderer, drawer, vc)
+  return graph : ScatterPlot
+
+  dir -> data : addObserver(graph)
+  data -> obs : addObserver(graph)
+
+  dir -> session ** : new GraphSession(\n  source, graph, graph, handler)
+
+return session : ISession
+
+' ============================================================
+'  Phase 3: 세션 시작
+' ============================================================
+== Phase 3: 세션 실행 ==
+
+Main -> session : start()
+note right : workerThread 생성 → run() 실행
+
+session -> session : run()
+activate session #LightBlue
+
+  ' --- 최초 draw ---
+  session -> graph : draw()
+  activate graph
+    ref over graph, drawer, scale, rdr : **Template Method: draw()**\n아래 ref 참조
+  deactivate graph
+
+  ' ============================================================
+  '  명령어 루프
+  ' ============================================================
+  loop 명령어 루프
+
+    session -> src : readObject()
+    src -> 사용자 : 명령어 대기
+    사용자 --> src : 명령어 입력
+    src --> session : command
+
+    ' ============================================================
+    '  ALT: add / view / exit
+    ' ============================================================
+    alt command == "add"
+
+      session -> handler : parseData(source)
+      activate handler
+        handler -> src : readObject("데이터를 입력하세요")
+        src -> 사용자 : 프롬프트 출력
+        사용자 --> src : "(3.5, 7.2)"
+        src --> handler : "(3.5, 7.2)"
+        handler -> handler : createParser().parse("(3.5, 7.2)")
+      return point : Point
+
+      session -> graph : appendData(point)
+      activate graph
+        graph -> data : append(point)
+        activate data
+          data -> data : points.add(point)
+          data -> obs : notifyObservers()
+          activate obs
+            obs -> graph : onDataChanged()
+            activate graph #LightGreen
+              graph -> graph : draw()
+              ref over graph, drawer, scale, rdr : **Template Method: draw()**\n아래 ref 참조
+            deactivate graph
+          deactivate obs
+        deactivate data
+      deactivate graph
+
+    else command == "view"
+
+      note over session : graph를 IViewControllable로 캐스팅\n(ScatterPlot → 성공)
+      session -> graph : getAvailableViews()
+      activate graph
+        graph -> vc : getAvailableViews()
+      return views : [{0,1}, {1,0}]
+
+      session -> session : 뷰 목록 콘솔 출력
+      note right : "1. x-y  2. y-x"\n(System.out 직접 출력)
+
+      session -> src : readObject()
+      src -> 사용자 : 번호 입력 대기
+      사용자 --> src : "2"
+      src --> session : "2"
+
+      session -> graph : setView({1, 0})
+      activate graph
+        graph -> vc : setView({1, 0})
+        graph -> graph : draw()
+        ref over graph, drawer, scale, rdr : **Template Method: draw()**\n아래 ref 참조
+      deactivate graph
+
+    else command == "exit"
+
+      note over session : 루프 종료
+
+    else 기타
+
+      session -> session : 안내 메시지 콘솔 출력
+      note right : "add, view, exit 중 입력하세요"\n(System.out 직접 출력)
+
+    end
+  end
+
+  session -> src : close()
+
+deactivate session
+
+Main -> session : await()
+note right : workerThread.join()\n세션 종료 대기
+
+== 프로세스 종료 ==
+
+' ============================================================
+'  REF: Template Method draw() 상세
+' ============================================================
+ref over graph, drawer, scale, vc, rdr
+  **AbstractGraph.draw() — Template Method**
+
+  graph -> drawer : drawTitle(metadata)
+  drawer --> graph : titleLines
+
+  == drawBody() — AbstractAxisGraph ==
+
+  graph -> vc : getAxes()
+  vc --> graph : axisMapping [0, 1]
+
+  graph -> drawer : drawAxis(data, metadata, axisMapping)
+  activate drawer
+    drawer -> scale : calcRange(xValues)
+    scale --> drawer : xRange
+    drawer -> scale : calcRange(yValues)
+    scale --> drawer : yRange
+  return axisLines
+
+  graph -> drawer : drawPlot(data, axisMapping)
+  activate drawer
+    drawer -> scale : toCol / toRow (각 Point)
+    note right of drawer : char[][] grid에 '*' 배치
+  return plotLines
+
+  == end drawBody() ==
+
+  graph -> rdr : print(lines)
+  note right of rdr : lines = titleLines\n  + axisLines + plotLines
+end ref
+
+@enduml

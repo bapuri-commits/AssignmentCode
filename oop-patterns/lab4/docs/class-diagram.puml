@@ -1,0 +1,326 @@
+@startuml MakeAGraph_Console_Interactive
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam groupInheritance 2
+hide empty members
+
+' ============================================================
+'  입력 계층
+' ============================================================
+package "입력 계층" #F5F5DC {
+  interface IInputSource {
+    +readObject() : Object
+    +readObject(prompt : String) : Object
+    +close() : void
+  }
+  class ConsoleInput
+
+  interface ITypeSelector {
+    +selectType(source : IInputSource) : String
+  }
+  class ConsoleTypeSelector
+
+  interface "IGraphDataInputHandler<T, E>" as IGDIH {
+    +readData(source) : T
+    +readMetadata(source) : GraphMetadata
+    +parseData(source) : E
+    +createParser() : IDataParser<E>
+  }
+  class ScatterConsoleInputHandler {
+    -dim : int
+  }
+  class BarConsoleInputHandler
+
+  ConsoleInput ..|> IInputSource
+  ConsoleTypeSelector ..|> ITypeSelector
+  ScatterConsoleInputHandler ..|> IGDIH : <ScatterPlotData, Point>
+  BarConsoleInputHandler ..|> IGDIH : <BarGraphData, Pair>
+}
+
+' ============================================================
+'  데이터 계층
+' ============================================================
+package "데이터 계층" #E8F5E9 {
+  class Point {
+    -coords : List<Double>
+    +get(index) : double
+    +size() : int
+    +{static}of(values...) : Point
+  }
+
+  class ScatterPlotData {
+    -points : List<Point>
+    +append(point : Point)
+    +getPoints() : List<Point>
+    +addObserver(o)
+    +suspendObservers()
+    +resumeObservers()
+  }
+
+  class BarGraphData {
+    -bars : List<Pair<String,Double>>
+    -direction : Direction
+    +append(bar : Pair)
+    +getBars() : List<Pair>
+    +getDirection() : Direction
+    +addObserver(o)
+    +suspendObservers()
+    +resumeObservers()
+  }
+
+  class GraphMetadata {
+    -title : String
+    -xLabel : String
+    -yLabel : String
+    +getTitle()
+    +getXLabel()
+    +getYLabel()
+  }
+
+  class ObserverSupport {
+    -observers : List<IGraphObserver>
+    -suspended : boolean
+    -dirty : boolean
+    +addObserver(o)
+    +notifyObservers()
+    +suspend()
+    +resume()
+  }
+
+  enum Direction {
+    VERTICAL
+    HORIZONTAL
+  }
+
+  class Range {
+    -min : double
+    -max : double
+  }
+
+  ScatterPlotData *--> ObserverSupport
+  ScatterPlotData --> "0..*" Point
+  BarGraphData *--> ObserverSupport
+  BarGraphData --> Direction
+}
+
+' ============================================================
+'  그래프 계층
+' ============================================================
+package "그래프 계층" #E3F2FD {
+  interface "IGraph<T>" as IGraph {
+    +draw() : void
+  }
+
+  interface "IDataAppendable<E>" as IDA {
+    +appendData(e : E) : void
+  }
+
+  interface "IBatchAppendable<E>" as IBA {
+    +suspendObservers()
+    +resumeObservers()
+  }
+  IBA --|> IDA
+
+  interface IViewControllable {
+    +swapAxes(a, b)
+    +setView(axes : int[])
+    +getAvailableViews() : List<int[]>
+  }
+
+  interface IGraphObserver {
+    +onDataChanged() : void
+  }
+
+  abstract "AbstractGraph<T, D extends ITitle>" as AG {
+    #data : T
+    #metadata : GraphMetadata
+    #renderer : IRenderer
+    #drawer : D
+    +draw() : void  <<template method>>
+    +onDataChanged() : void
+    #{abstract}drawBody() : List<String>
+  }
+  AG ..|> IGraph
+  AG ..|> IGraphObserver
+
+  abstract "AbstractAxisGraph<T, D>" as AAG {
+    #viewController : ViewController
+    #drawBody() : List<String>
+    +swapAxes(a, b)
+    +setView(axes)
+    +getAvailableViews()
+  }
+  AAG --|> AG
+  AAG ..|> IViewControllable
+
+  class ScatterPlot {
+    +appendData(p : Point)
+    +suspendObservers()
+    +resumeObservers()
+  }
+  ScatterPlot --|> AAG : <ScatterPlotData,\nIScatterDrawer>
+  ScatterPlot ..|> IBA : <Point>
+
+  class BarGraph {
+    +appendData(b : Pair)
+    +suspendObservers()
+    +resumeObservers()
+    +getAvailableViews() : emptyList
+  }
+  BarGraph --|> AAG : <BarGraphData,\nIBarDrawer>
+  BarGraph ..|> IBA : <Pair>
+}
+
+' ============================================================
+'  그리기 계층
+' ============================================================
+package "그리기 계층" #FFF3E0 {
+  interface ITitle {
+    +drawTitle(m : GraphMetadata) : List<String>
+  }
+
+  interface "IAxis<T>" as IAxis {
+    +drawAxis(data, metadata, axisMapping) : List<String>
+  }
+
+  interface "IAxisPlot<T>" as IAxisPlot {
+    +drawPlot(data, axisMapping) : List<String>
+  }
+
+  interface IScatterDrawer
+  IScatterDrawer --|> ITitle
+  IScatterDrawer --|> IAxis : <ScatterPlotData>
+  IScatterDrawer --|> IAxisPlot : <ScatterPlotData>
+
+  interface IBarDrawer
+  IBarDrawer --|> ITitle
+  IBarDrawer --|> IAxis : <BarGraphData>
+  IBarDrawer --|> IAxisPlot : <BarGraphData>
+
+  class ScatterPlotDrawer {
+    -scaleCalc : ScaleCalculator
+    -gridHeight : int
+    -gridWidth : int
+  }
+  ScatterPlotDrawer ..|> IScatterDrawer
+
+  class BarGraphDrawer {
+    -scaleCalc : ScaleCalculator
+    -gridHeight : int
+    -gridWidth : int
+  }
+  BarGraphDrawer ..|> IBarDrawer
+
+  class ScaleCalculator {
+    +calcRange(values : List<Double>) : Range
+    +calcInterval(range : Range) : double
+    +getTickLabels(range : Range) : List<String>
+    +toCol(x, xMin, xMax, gridWidth) : int
+    +toRow(y, yMin, yMax, gridHeight) : int
+  }
+
+  class ViewController {
+    -dim : int
+    -axisMapping : int[]
+    +swapAxes(a, b)
+    +setView(axes : int[])
+    +getAxes() : int[]
+    +getAvailableViews() : List<int[]>
+  }
+
+  ScatterPlotDrawer *--> ScaleCalculator
+  BarGraphDrawer *--> ScaleCalculator
+}
+
+' ============================================================
+'  출력 계층
+' ============================================================
+package "출력 계층" #F3E5F5 {
+  interface IRenderer {
+    +print(lines : List<String>) : void
+  }
+  class TextRenderer
+  TextRenderer ..|> IRenderer
+}
+
+' ============================================================
+'  조립 계층
+' ============================================================
+package "조립 계층" #FFEBEE {
+  class GraphDirector {
+    -typeSelector : ITypeSelector
+    +construct(source, renderer) : ISession
+    -constructGraph(source, renderer) : BuildResult
+  }
+
+  class GraphFactory <<static>> {
+    +{static}createScatter(data, meta, renderer) : ScatterPlot
+    +{static}createBar(data, meta, renderer) : BarGraph
+  }
+
+  class "BuildResult<T, E>" as BR {
+    -graph : IGraph<T>
+    -appendable : IBatchAppendable<E>
+    -handler : IGraphDataInputHandler<T, E>
+  }
+}
+
+' ============================================================
+'  세션 계층
+' ============================================================
+package "세션 계층" #E0F7FA {
+  interface ISession {
+    +start() : void
+    +stop() : void
+    +await() : void
+  }
+
+  class "GraphSession<T, E>" as GS {
+    -source : IInputSource
+    -graph : IGraph<T>
+    -appendable : IDataAppendable<E>
+    -handler : IGraphDataInputHandler<T, E>
+    -workerThread : Thread
+    +run() : void
+  }
+  GS ..|> ISession
+}
+
+' ============================================================
+'  계층 간 주요 관계
+' ============================================================
+
+' --- AbstractGraph 내부 의존 ---
+AG --> IRenderer : renderer
+AG --> GraphMetadata : metadata
+AAG *--> ViewController
+
+' --- 옵저버 ---
+ObserverSupport --> "0..*" IGraphObserver : notifies
+
+' --- GraphDirector 의존 ---
+GraphDirector --> ITypeSelector : uses
+GraphDirector ..> IInputSource : receives
+GraphDirector ..> IRenderer : receives
+GraphDirector ..> GraphFactory : calls
+GraphDirector ..> BR : creates
+GraphDirector ..> GS : creates
+GraphDirector ..> ScatterConsoleInputHandler : <<creates>>
+GraphDirector ..> BarConsoleInputHandler : <<creates>>
+
+' --- GraphFactory 생성 ---
+GraphFactory ..> ScatterPlot : creates
+GraphFactory ..> BarGraph : creates
+GraphFactory ..> ScatterPlotDrawer : creates
+GraphFactory ..> BarGraphDrawer : creates
+GraphFactory ..> ViewController : creates
+GraphFactory ..> ScaleCalculator : creates
+
+' --- GraphSession 의존 ---
+GS --> IInputSource : reads from
+GS --> IGraph : draws
+GS --> IDA : appends to
+GS --> IGDIH : parses with
+GS ..> IViewControllable : <<runtime cast>>
+
+@enduml
