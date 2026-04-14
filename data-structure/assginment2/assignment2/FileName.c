@@ -4,7 +4,7 @@
 
 #define MAX_STACK_SIZE 100
 
-// ===== 피연산자 스택 =====
+//피연산자 스택
 typedef int element;
 typedef struct {
     element data[MAX_STACK_SIZE];
@@ -28,7 +28,7 @@ element pop_int(IntStackType *s) {
 }
 
 
-// ===== 연산자 스택 =====
+//연산자 스택
 typedef char op_element;
 typedef struct {
     op_element data[MAX_STACK_SIZE];
