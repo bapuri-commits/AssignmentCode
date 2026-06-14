@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -7,7 +6,6 @@
 
 char expression[MAX_EXPRESSION_SIZE];
 char finalexpression[MAX_EXPRESSION_SIZE][MAX_EXPRESSION_SIZE];
-
 
 int tokennumber;
 
@@ -26,14 +24,25 @@ int is_int_empty(IntStackType *s) {
     return (s->top == -1);
 }
 
+int is_int_full(IntStackType *s) {
+    return (s->top == (MAX_STACK_SIZE - 1));
+}
+
 void push_int(IntStackType *s, element item) {
+    if (is_int_full(s)) {
+        fprintf(stderr, "스택 포화 에러\n");
+        return;
+    }
     s->data[++(s->top)] = item;
 }
 
 element pop_int(IntStackType *s) {
+    if (is_int_empty(s)) {
+        fprintf(stderr, "스택 공백 에러\n");
+        exit(1);
+    }
     return s->data[(s->top)--];
 }
-
 
 //연산자 스택
 typedef char op_element;
@@ -50,11 +59,23 @@ int is_char_empty(CharStackType *s) {
     return (s->top == -1);
 }
 
+int is_char_full(CharStackType *s) {
+    return (s->top == (MAX_STACK_SIZE - 1));
+}
+
 void push_char(CharStackType *s, op_element item) {
+    if (is_char_full(s)) {
+        fprintf(stderr, "스택 포화 에러\n");
+        return;
+    }
     s->data[++(s->top)] = item;
 }
 
 op_element pop_char(CharStackType *s) {
+    if (is_char_empty(s)) {
+        fprintf(stderr, "스택 공백 에러\n");
+        exit(1);
+    }
     return s->data[(s->top)--];
 }
 
@@ -62,7 +83,6 @@ int isnum(char c) {
     int st = c - '0';
     return (st <= 9 && st >= 0);
 }
-
 
 int prefix2StackEval() {
     IntStackType operand;
@@ -158,14 +178,13 @@ int prefix2StackEval() {
     for (int i = operator_top_max; i >= -1; i--) {
         for (int j = 0; j < step; j++) {
             if (i == -1) { printf("=== "); continue; }
-            if (i <= operator_top[j]) printf(" %c  ", operator_snapshot[j][i]);
+            if (i <= operator_top[j]) printf("%3c ", operator_snapshot[j][i]);
             else printf("    ");
         }
         printf("\n");
     }
     return pop_int(&operand);
 }
-
 
 int strLen(char* e) {
     int i = 0;
