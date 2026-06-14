@@ -18,6 +18,14 @@ Release/
 *.log
 *.FileListAbsolute.txt
 *.CppClean.log
+*.vcxproj.user
+
+# 백업/인코딩 변환 산출물
+*.bak
+*.cp949.bak
+
+# 압축 산출물 (제출/배포용 zip은 추적하지 않음)
+*.zip
 
 # macOS 메타데이터
 __MACOSX/
