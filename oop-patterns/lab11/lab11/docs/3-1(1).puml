@@ -1,0 +1,72 @@
+@startuml
+
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam noteBackgroundColor #FEFECE
+skinparam noteBorderColor #888888
+skinparam class {
+    BackgroundColor<<context>>  #E8F4F8
+    BackgroundColor<<strategy>> #FFE8CC
+    BorderColor #444444
+}
+hide empty members
+
+title Strategy Pattern - Character & Weapon
+
+interface WeaponBehavior {
+    + {abstract} useWeapon() : void
+}
+
+abstract class Character <<context>> {
+    # weapon : WeaponBehavior
+    + fight() : void
+    + setWeapon(weapon : WeaponBehavior) : void
+}
+
+class King    <<context>> extends Character
+class Queen   <<context>> extends Character
+class Knight  <<context>> extends Character
+class Bishop  <<context>> extends Character
+
+class KnifeBehavior        <<strategy>> implements WeaponBehavior
+class AxeBehavior          <<strategy>> implements WeaponBehavior
+class SpearBehavior        <<strategy>> implements WeaponBehavior
+class BowAndArrowBehavior  <<strategy>> implements WeaponBehavior
+
+Character "1" o-- "1" WeaponBehavior : weapon
+
+note right of Character
+  <b>Context</b>
+  WeaponBehavior 참조를 가지고
+  fight() 호출 시 weapon.useWeapon()으로 위임.
+  setWeapon()으로 런타임에 무기 교체 가능.
+end note
+
+note right of WeaponBehavior
+  <b>Strategy 인터페이스</b>
+  모든 무기 동작의 공통 규약.
+  Character는 구체 무기를 모르고도 동작.
+end note
+
+note bottom of KnifeBehavior
+  <b>ConcreteStrategies</b>
+  각 무기별 useWeapon() 구현.
+  Knife    → 칼로 베기
+  Axe      → 도끼로 찍기
+  Spear    → 창으로 찌르기
+  Bow      → 활로 쏘기
+end note
+
+@enduml
+/'
+abstract class Character <<context>> {
+    # weapon : WeaponBehavior
+    + fight() : void
+    + setWeapon(weapon : WeaponBehavior) : void
+}
+
+class King   <<context>> extends Character
+class Queen  <<context>> extends Character
+class Knight <<context>> extends Character
+class Bishop <<context>> extends Character
+'/

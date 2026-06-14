@@ -1,0 +1,104 @@
+@startuml
+
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam noteBackgroundColor #FEFECE
+skinparam noteBorderColor #888888
+skinparam class {
+    BackgroundColor<<context>>  #E8F4F8
+    BackgroundColor<<state>>    #FFE8CC
+    BorderColor #444444
+}
+hide empty members
+
+title Door2 - Class Diagram (State Pattern)
+
+interface DoorState {
+    + {abstract} click(door : Door2) : void
+    + {abstract} complete(door : Door2) : void
+    + {abstract} status() : String
+}
+
+class Door2 <<context>> {
+    - state : DoorState
+    + click() : void
+    + complete() : void
+    + timeout() : void
+    + setState(state : DoorState) : void
+    + status() : String
+}
+
+class ClosedState   <<state>> implements DoorState
+class OpeningState  <<state>> implements DoorState
+class OpenState     <<state>> implements DoorState
+class ClosingState  <<state>> implements DoorState
+class StayOpenState <<state>> implements DoorState
+
+Door2 "1" *-- "1" DoorState : state
+
+note right of Door2
+  <b>Context</b>
+  현재 state 객체에 행위를 위임.
+  click/complete 호출 시
+  내부적으로 state.xxx(this) 실행.
+  timeout은 예외적으로 Door2가 직접 관리.
+end note
+
+note right of DoorState
+  <b>State 인터페이스</b>
+  메소드에 Door2(this)를 받음.
+  → ConcreteState가
+     Context의 상태를 전이 가능
+end note
+
+note bottom of ClosedState
+  <b>ConcreteStates</b>
+  각자 자기 상태의 전이 규칙 캡슐화
+  예: ClosedState.click(door)
+      → door.setState(new OpeningState())
+  ──
+  <b>전이 책임의 분산</b>
+  Door1의 거대한 if-else가
+  5개 State 클래스로 분해됨
+end note
+
+@enduml
+/'@startuml
+
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam noteBackgroundColor #FEFECE
+skinparam noteBorderColor #888888
+hide empty members
+
+title Door2 - Class Diagram
+
+interface DoorState{
+    +{abstract}click(door : Door2) : void
+    +{abstract}complete(door : Door2) : void
+    +{abstract}timeout(door : Door2) : void
+}
+
+class Door2{
+    -state : DoorState
+    -setState(state : DoorState) : void
+    +click() : void
+    +complete() : void
+    +timeout() : void
+}
+
+class Closed implements DoorState{
+    #click(door : Door2) : void
+    #complete(door : Door2) : void
+    #timeout(door : Door2) : void
+}
+
+class Open implements DoorState
+class Opening implements DoorState
+class StayOpen implements DoorState
+class Closing implements DoorState
+
+DoorState "1"..*"1" Door2
+
+@enduml
+'/

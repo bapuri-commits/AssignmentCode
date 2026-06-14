@@ -1,0 +1,82 @@
+@startuml
+
+title Door1 - State Diagram
+
+hide empty description
+skinparam shadowing false
+skinparam noteBackgroundColor #FEFECE
+skinparam noteBorderColor #888888
+
+skinparam state {
+    BackgroundColor<<idle>> #E8F4F8
+    BackgroundColor<<moving>> #FFE8CC
+    BorderColor #444444
+}
+
+[*] --> Closed
+
+state Closed   <<idle>>
+state Open     <<idle>>
+state StayOpen <<idle>>
+state Opening  <<moving>>
+state Closing  <<moving>>
+
+Closed   --> Opening  : click
+Opening  --> Closing  : click
+Opening  --> Open     : complete
+Closing  --> Opening  : click
+Closing  --> Closed   : complete
+Open     --> StayOpen : click
+Open     --> Closing  : timeout
+StayOpen --> Closing  : click, timeout
+
+note right of Closed
+  <b>초기 상태</b>
+  문이 완전히 닫혀 있음
+end note
+
+note right of Opening
+  <b>전이 상태 (모터 동작 중)</b>
+  complete 신호로 Open으로 이동
+  click 시 즉시 Closing으로 반전
+end note
+
+note left of Open
+  <b>대기 상태</b>
+  click → 사용자가 계속 열어둠
+  timeout → 자동 닫힘
+end note
+
+note left of StayOpen
+  <b>강제 개방 상태</b>
+  click 또는 timeout으로 닫힘
+end note
+
+note bottom
+  <b>범례</b>
+  ◼ 파란색 = 정지 상태 (idle)
+  ◼ 주황색 = 동작 상태 (moving, 모터 가동)
+  ──
+  <b>이벤트</b>
+  click    : 버튼 입력
+  complete : 모터 동작 완료
+  timeout  : 일정 시간 경과
+end note
+
+@enduml
+
+/'@startuml
+
+title Door1 - State Diagram 
+[*] --> Closed
+
+Closed --> Opening : click
+Opening --> Closing : click
+Closing --> Opening : click
+Opening --> Open : complete
+Open --> StayOpen : click
+StayOpen --> Closing : click, timeout
+Open --> Closing : timeout
+Closing --> Closed : complete
+
+@enduml'/

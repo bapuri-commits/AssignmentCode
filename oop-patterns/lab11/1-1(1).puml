@@ -1,0 +1,55 @@
+@startuml
+
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam noteBackgroundColor #FEFECE
+skinparam noteBorderColor #888888
+hide empty members
+
+title Template Method Pattern - CaffeineBeverage
+
+abstract class CaffeineBeverage {
+    +prepareRecipe() : void <<final>>
+    #boilWater() : void
+    #pourInCup() : void
+    #{abstract} brew() : void
+    #{abstract} addCondiments() : void
+}
+
+class Coffee extends CaffeineBeverage {
+    #brew() : void
+    #addCondiments() : void
+}
+
+class Tea extends CaffeineBeverage {
+    #brew() : void
+    #addCondiments() : void
+}
+
+note right of CaffeineBeverage
+  <b>AbstractClass</b>
+  --
+  <b>prepareRecipe()</b> = Template Method
+    final로 선언, 알고리즘 골격 고정
+    1. boilWater()       (공통)
+    2. brew()            (가변, abstract)
+    3. pourInCup()       (공통)
+    4. addCondiments()   (가변, abstract)
+  --
+  boilWater, pourInCup = Concrete Operation
+  brew, addCondiments  = Primitive Operation
+end note
+
+note bottom of Coffee
+  <b>ConcreteClass</b>
+  brew()          → 필터로 커피 추출
+  addCondiments() → 설탕, 우유
+end note
+
+note bottom of Tea
+  <b>ConcreteClass</b>
+  brew()          → 티백 우리기
+  addCondiments() → 레몬
+end note
+
+@enduml

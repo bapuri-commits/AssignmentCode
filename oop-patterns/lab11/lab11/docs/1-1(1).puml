@@ -1,0 +1,26 @@
+@startuml
+
+skinparam linetype ortho
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide empty members
+
+abstract class CaffeineBeverage {
+    +prepareRecipe() : void <<final>>
+    #boilWater() : void
+    #pourInCup() : void
+    #{abstract} brew() : void
+    #{abstract} addCondiments() : void
+}
+
+class Coffee extends CaffeineBeverage {
+    #brew() : void
+    #addCondiments() : void
+}
+
+class Tea extends CaffeineBeverage {
+    #brew() : void
+    #addCondiments() : void
+}
+
+@enduml
