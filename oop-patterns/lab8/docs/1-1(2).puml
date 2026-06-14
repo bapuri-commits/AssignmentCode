@@ -1,0 +1,37 @@
+@startuml
+
+top to bottom direction
+skinparam linetype ortho
+
+interface TrainTimetable {
+    + getTimetable() : String
+    + getTrainDepartureTime(trainId : String) : String
+}
+
+class TimetableElectricTrain {
+    + getTimetable() : String
+    + getTrainDepartureTime(trainId : String) : String
+}
+
+class DisplayTimeTable {
+    + printTimetable() : void
+}
+
+TimetableElectricTrain -up-|> TrainTimetable
+DisplayTimeTable -down..> TimetableElectricTrain : uses
+/'
+note top of TrainTimetable
+열차 시간표를 가져오는 인터페이스
+end note
+
+note right of TimetableElectricTrain
+TrainTimetable 인터페이스를 구현한 클래스
+end note
+
+note right of DisplayTimeTable
+파일 시스템과 상호 작용하는 클라이언트 코드
+printTimetable() 메서드는
+ElectricTrainTimetable 클래스의 메서드를 사용한다
+end note
+'/
+@enduml

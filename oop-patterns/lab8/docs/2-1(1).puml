@@ -1,0 +1,77 @@
+@startuml
+
+skinparam linetype ortho
+
+abstract class PaperCurrencyDispenser {
+    # nextDispenser : PaperCurrencyDispenser
+    + setNext(dispenser : PaperCurrencyDispenser) : PaperCurrencyDispenser
+    + dispense(currency : PaperCurrency) : void {abstract}
+}
+
+class FiftyThousandDispenser {
+    + dispense(currency : PaperCurrency) : void
+}
+
+class TenThousandDispenser {
+    + dispense(currency : PaperCurrency) : void
+}
+
+class FiveThousandDispenser {
+    + dispense(currency : PaperCurrency) : void
+}
+
+class ThousandDispenser {
+    + dispense(currency : PaperCurrency) : void
+}
+
+class PaperCurrency {
+    # amount : int
+    + getAmount() : int
+    + setAmount(amount : int) : void
+}
+
+FiftyThousandDispenser --|> PaperCurrencyDispenser
+TenThousandDispenser --|> PaperCurrencyDispenser
+FiveThousandDispenser --|> PaperCurrencyDispenser
+ThousandDispenser --|> PaperCurrencyDispenser
+PaperCurrencyDispenser .right.> PaperCurrency : uses
+PaperCurrencyDispenser --> "0..1" PaperCurrencyDispenser : nextDispenser
+/'
+note top of PaperCurrencyDispenser
+    CoR의 추상 핸들러.
+    nextDispenser 필드로 다음 디스펜서를 참조하며
+    체인을 구성. dispense()는 서브클래스가
+    각 지폐 단위에 맞게 구현
+end note
+
+note right of FiftyThousandDispenser
+    5만원권 처리 담당.
+    amount >= 50000이면 매수 계산 후 출력,
+    나머지를 nextDispenser로 위임
+end note
+
+note right of TenThousandDispenser
+    1만원권 처리 담당.
+    amount >= 10000이면 매수 계산 후 출력,
+    나머지를 nextDispenser로 위임
+end note
+
+note right of FiveThousandDispenser
+    5천원권 처리 담당.
+    amount >= 5000이면 매수 계산 후 출력,
+    나머지를 nextDispenser로 위임
+end note
+
+note right of ThousandDispenser
+    1천원권 처리 담당.
+    체인의 마지막 핸들러.
+    처리 후 nextDispenser가 없으면 체인 종료
+end note
+
+note left of PaperCurrency
+    인출 요청 객체.
+    amount는 처리되면서
+    나머지가 다음 디스펜서로 전달됨
+end note
+'/
+@enduml

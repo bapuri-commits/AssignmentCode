@@ -1,0 +1,62 @@
+@startuml
+
+top to bottom direction
+skinparam linetype ortho
+
+interface TrainTimetable {
+    + getTimetable() : String[]
+    + getTrainDepartureTime(trainId : String) : String
+}
+
+class ElectricTrainTimetable {
+    + getTimetable() : String[]
+    + getTrainDepartureTime(trainId : String) : String
+}
+
+class ElectricTrainTimetableProxy {
+    - trainTimetable : TrainTimetable
+    - timetableCache : String[]
+    + getTimetable() : String[]
+    + getTrainDepartureTime(trainId : String) : String
+    - getTrainDepartureTimeSub(trainId : String, timetable : String[]) : String
+    + clearCache() : void
+}
+
+class DisplayTimeTable {
+    + printTimetable() : void
+}
+
+ElectricTrainTimetable -up-|> TrainTimetable
+ElectricTrainTimetableProxy -up-|> TrainTimetable
+ElectricTrainTimetableProxy *-right- "1" ElectricTrainTimetable
+DisplayTimeTable .down.> TrainTimetable : uses
+
+/'
+note right of TrainTimetable
+    열차 시간표를 가져오는 공통 인터페이스.
+    Client는 이 인터페이스만 알고 있어서
+    Proxy와 RealSubject를 교체 가능
+end note
+
+note right of ElectricTrainTimetable
+    실제 디스크에 접근하여
+    시간표 데이터를 읽어오는 RealSubject.
+    느린 레거시 시스템과 직접 상호작용
+end note
+
+note left of ElectricTrainTimetableProxy
+    Caching Proxy.
+    - timetableCache가 null이면 RealSubject에 접근하고 결과를 캐싱
+    - 이후 요청은 캐시에서 반환
+    - getTrainDepartureTime()도 getTimetable()을 통해 캐시 재사용
+    - clearCache()로 캐시 무효화 가능
+end note
+
+note right of DisplayTimeTable
+    클라이언트 코드.
+    TrainTimetable 인터페이스에만 의존하므로
+    Proxy인지 RealSubject인지 알 필요 없음
+end note
+'/
+
+@enduml

@@ -1,0 +1,120 @@
+@startuml
+
+top to bottom direction
+skinparam linetype ortho
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide empty members
+
+/'title Composite + Chain of Responsibility Structure'/
+
+abstract class Entry {
+    # name : String
+    # handler : Handler
+
+    + getName() : String
+    + getSize() : int
+    + printList() : void
+    + setHandler(handler : Handler) : void
+}
+
+class File {
+    - size : int
+
+    + getSize() : int
+}
+
+class Directory {
+    - list : List~Entry~
+
+    + add(entry : Entry) : void
+    + getSize() : int
+    + printList() : void
+}
+
+abstract class Handler {
+    # nextHandler : Handler
+
+    + setNext(handler : Handler) : Handler
+    + run(entry : Entry) : void
+    + process(entry : Entry) : void
+}
+
+class NameHandler {
+    + process(entry : Entry) : void
+}
+
+class SizeHandler {
+    + process(entry : Entry) : void
+}
+
+class PrintListHandler {
+    + process(entry : Entry) : void
+}
+
+'
+' ===== Composite 영역 =====
+'
+
+together {
+
+    Entry <|-- File
+    Entry <|-- Directory
+
+    Directory "1" *-- "0..*" Entry : contains
+    Entry --> "0..1" Handler : handler
+}
+
+'
+' ===== CoR 영역 =====
+'
+
+together {
+
+    Handler <|-- NameHandler
+    Handler <|-- SizeHandler
+    Handler <|-- PrintListHandler
+
+    Handler --> "0..1" Handler : next
+}
+
+'
+' ===== 레이아웃 힌트 =====
+'
+
+File -[hidden]right- Directory
+
+NameHandler -[hidden]right- SizeHandler
+SizeHandler -[hidden]right- PrintListHandler
+
+Entry -[hidden]down- Handler
+/'
+'
+' ===== Notes =====
+'
+
+note left of Entry
+Composite 패턴의 공통 추상 클래스
+
+File과 Directory를
+동일하게 처리하기 위한
+공통 인터페이스 정의
+end note
+
+note right of Directory
+Composite 노드
+
+자식 Entry를 포함 가능하며
+getSize()는 자식들의
+크기 합산 결과 반환
+end note
+
+note bottom of Handler
+Chain of Responsibility의
+추상 핸들러
+
+run() 내부에서 process() 호출 후
+nextHandler로 처리 위임
+end note
+'/
+@enduml

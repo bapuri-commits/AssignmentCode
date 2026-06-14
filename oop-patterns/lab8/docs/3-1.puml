@@ -1,0 +1,91 @@
+@startuml
+
+skinparam linetype ortho
+
+interface StackImplementor{
+    + push(value : int) : void
+    + pop() : int
+    + top() : int
+    + isEmpty() : boolean
+    + isFull() : boolean
+    + printStack() : void
+}
+
+abstract class Stack{
+    # impl : StackImplementor
+    + push(value : int) : void
+    + pop() : int
+    + top() : int
+    + isEmpty() : boolean
+    + isFull() : boolean
+    + printStack() : void
+}
+
+class OddStack{
+    + push(value : int) : void
+}
+
+class EvenStack{
+    + push(value : int) : void
+}
+
+class ArrayStack{
+    - arr : int []
+    + push(value : int) : void
+    + pop() : int
+    + top() : int
+    + isEmpty() : boolean
+    + isFull() : boolean
+    + printStack() : void
+}
+
+class LinkedStack{
+    - list : LinkedList<int>
+    + push(value : int) : void
+    + pop() : int
+    + top() : int
+    + isEmpty() : boolean
+    + isFull() : boolean
+    + printStack() : void
+}
+
+OddStack --|> Stack
+EvenStack --|> Stack
+ArrayStack ..|> StackImplementor
+LinkedStack ..|> StackImplementor
+Stack o-right- StackImplementor
+/'
+note top of StackImplementor
+    구현 계층 인터페이스 (Bridge의 Implementor).
+    Array와 Linked 두 가지 저장 방식을
+    동일한 인터페이스로 추상화
+end note
+
+note left of Stack
+    추상화 계층 (Bridge의 Abstraction).
+    impl 필드로 StackImplementor를 has-a.
+    push() 외 공통 위임 로직은 여기서 구현하여
+    서브클래스 중복을 제거
+end note
+
+note left of OddStack
+    홀수값만 push() 통과시키는 필터링 로직 구현.
+    나머지 메서드는 Stack의 위임 구현을 그대로 사용
+end note
+
+note left of EvenStack
+    짝수값만 push() 통과시키는 필터링 로직 구현.
+    나머지 메서드는 Stack의 위임 구현을 그대로 사용
+end note
+
+note right of ArrayStack
+    배열 기반 스택 구현체.
+    isFull()이 의미 있는 구현을 가짐
+end note
+
+note right of LinkedStack
+    연결 리스트 기반 스택 구현체.
+    동적 크기라 isFull()은 항상 false 반환
+end note
+'/
+@enduml
